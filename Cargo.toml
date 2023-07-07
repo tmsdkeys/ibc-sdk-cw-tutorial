@@ -1,5 +1,5 @@
 [package]
-name = "ibc-messenger"
+name = "ibc-poll-messenger"
 version = "0.1.0"
 authors = ["Thomas Dekeyser <thomas@polymerlabs.org>"]
 edition = "2021"
