@@ -1,5 +1,5 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use crate::state::{ Poll};
+use crate::state::Poll;
 
 #[cw_serde]
 pub struct InstantiateMsg {}
@@ -7,6 +7,7 @@ pub struct InstantiateMsg {}
 #[cw_serde]
 pub enum ExecuteMsg {
   SendMessage { channel: String, message: String },
+  SendPollResult { channel: String, poll_id: u8, voted_address: String },
   CreatePoll { one_address: String, two_address: String, three_address: String },
   Vote { poll_id: u8, choice: String},
   EndPoll { poll_id: u8 },

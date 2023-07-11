@@ -14,6 +14,12 @@ pub struct State {
 }
 
 #[cw_serde]
+pub struct PacketData {
+  pub poll_id: u8,
+  pub voted_address: String,
+}
+
+#[cw_serde]
 pub struct Config {
   pub admin_address: Addr,
 }
