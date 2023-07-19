@@ -27,8 +27,8 @@ pub enum IbcExecuteMsg {
 #[derive(QueryResponses)]
 pub enum QueryMsg {
   /// Return the state for a particular channel
-  #[returns(GetStateResponse)]
-  GetState {
+  #[returns(GetChannelStateResponse)]
+  GetChannelState {
     // the ID of the channel to query its state
     channel: String,
   },
@@ -40,7 +40,7 @@ pub enum QueryMsg {
 }
 
 #[cw_serde]
-pub struct GetStateResponse {
+pub struct GetChannelStateResponse {
   pub count_sent: u32,
   pub count_received: u32,
   pub latest_message: Option<String>,

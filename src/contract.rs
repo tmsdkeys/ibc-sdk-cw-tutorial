@@ -7,8 +7,8 @@ use cosmwasm_std::{
 use cw2::set_contract_version;
 
 use crate::error::ContractError;
-use crate::msg::{InstantiateMsg, ExecuteMsg, IbcExecuteMsg, QueryMsg, GetStateResponse, GetPollResponse};
-use crate::state::{State, CHANNEL_STATE, CONFIG, Config, POLLS, Poll, NEXT_ID, PacketData};
+use crate::msg::{InstantiateMsg, ExecuteMsg, IbcExecuteMsg, QueryMsg, GetChannelStateResponse, GetPollResponse};
+use crate::state::{ChannelState, CHANNEL_STATE, CONFIG, Config, POLLS, Poll, NEXT_ID, PacketData};
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:ibc-poll-messenger";
@@ -70,7 +70,7 @@ use super::*;
   }
 
   /// Called on IBC packet receive in other chain
-  pub fn try_receive_message(deps: DepsMut, channel: String, message: String) -> Result<State, ContractError> {
+  pub fn try_receive_message(deps: DepsMut, channel: String, message: String) -> Result<ChannelState, ContractError> {
     CHANNEL_STATE.update(deps.storage, channel, |state| -> Result<_, ContractError> {
       match state {
         Some(mut s) => {
@@ -213,14 +213,14 @@ use super::*;
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
   match msg {
-    QueryMsg::GetState { channel } => to_binary(&query_state(deps, channel.clone())?),
+    QueryMsg::GetChannelState { channel } => to_binary(&query_state(deps, channel.clone())?),
     QueryMsg::GetPoll { poll_id } => to_binary(&query_poll(deps, poll_id.clone())?),
   }
 }
 
-pub fn query_state(deps: Deps, channel: String) -> StdResult<GetStateResponse> {
+pub fn query_state(deps: Deps, channel: String) -> StdResult<GetChannelStateResponse> {
   let state = CHANNEL_STATE.load(deps.storage, channel.clone())?;
-  Ok(GetStateResponse { 
+  Ok(GetChannelStateResponse { 
     count_sent: state.count_sent, 
     count_received: state.count_received, 
     latest_message: state.latest_message 

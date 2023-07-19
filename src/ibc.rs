@@ -12,10 +12,10 @@ use crate::{
   error::Never,
   msg::IbcExecuteMsg,
   ContractError,
-  state::{State, CHANNEL_STATE, POLLS, PacketData},
+  state::{ChannelState, CHANNEL_STATE, POLLS, PacketData},
 };
 
-pub const IBC_VERSION: &str = "poll-1";
+pub const IBC_VERSION: &str = "1.0";
 
 /// Handles the `OpenInit` and `OpenTry` parts of the IBC handshake
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -38,7 +38,7 @@ pub fn ibc_channel_connect(
 
   // initialize the state for this channel
   let channel = msg.channel().endpoint.channel_id.clone();
-  let state = State {
+  let state = ChannelState {
     count_sent: 0,
     count_received: 0,
     latest_message: None,

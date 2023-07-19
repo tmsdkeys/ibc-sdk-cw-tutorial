@@ -3,8 +3,13 @@ use cosmwasm_std::Addr;
 use cw_storage_plus::{Map, Item};
 
 #[cw_serde]
+pub struct Config {
+  pub admin_address: Addr,
+}
+
+#[cw_serde]
 #[derive(Default)]
-pub struct State {
+pub struct ChannelState {
   // count of messages successfully sent and received by counterparty
   pub count_sent: u32,
   // count of messages received
@@ -19,10 +24,7 @@ pub struct PacketData {
   pub voted_address: String,
 }
 
-#[cw_serde]
-pub struct Config {
-  pub admin_address: Addr,
-}
+
 
 #[cw_serde]
 pub struct Poll {
@@ -37,7 +39,7 @@ pub struct Poll {
 }
 
 // map with channel_id as key and State as value
-pub const CHANNEL_STATE: Map<String, State> = Map::new("channel_state");
+pub const CHANNEL_STATE: Map<String, ChannelState> = Map::new("channel_state");
 
 pub const CONFIG: Item<Config> = Item::new("config");
 
