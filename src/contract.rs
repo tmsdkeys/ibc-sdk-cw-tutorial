@@ -46,8 +46,8 @@ pub fn execute(
 ) -> Result<Response, ContractError> {
   match msg {
     ExecuteMsg::SendMessage { channel, message} => execute::try_send_message(deps, env, channel, message),
-    ExecuteMsg::SendPollResult { channel, poll_id, voted_address } => execute::try_send_poll_result(deps, env, channel, poll_id, voted_address),
-    ExecuteMsg::CreatePoll { one_address, two_address, three_address } => execute::execute_create_poll(deps, env, info, one_address, two_address, three_address),
+    ExecuteMsg::SendPollResult { channel, poll_id, voted } => execute::try_send_poll_result(deps, env, channel, poll_id, voted),
+    ExecuteMsg::CreatePoll { one_option, two_option, three_option } => execute::execute_create_poll(deps, env, info, one_option, two_option, three_option),
     ExecuteMsg::Vote { poll_id, choice } => execute::execute_vote(deps, env, info, poll_id, choice),
     ExecuteMsg::EndPoll { poll_id } => execute::execute_end_poll(deps, env, info, poll_id),
   }
@@ -83,10 +83,10 @@ use super::*;
     })
   }
 
-  pub fn try_send_poll_result(_deps: DepsMut, env: Env, channel: String, poll_id: u8 , voted_address: String) -> Result<Response, ContractError> {
+  pub fn try_send_poll_result(_deps: DepsMut, env: Env, channel: String, poll_id: u8 , voted: u8) -> Result<Response, ContractError> {
     let packet_data = PacketData {
       poll_id,
-      voted_address,
+      voted,
     };
 
     Ok(Response::new()
@@ -104,9 +104,9 @@ use super::*;
     deps: DepsMut, 
     _env: Env, 
     info: MessageInfo, 
-    one_address: String, 
-    two_address: String, 
-    three_address: String
+    one_option: u8, 
+    two_option: u8, 
+    three_option: u8
   ) -> Result<Response, ContractError> {
     // we load the config to check if the message sender is the admin
     // if not, throw error
@@ -117,9 +117,9 @@ use super::*;
     }
     // we construct a poll and then store it in state
     let poll = Poll{
-      one_address,
-      two_address,
-      three_address,
+      one_option,
+      two_option,
+      three_option,
       one_votes: 0,
       two_votes: 0,
       three_votes: 0,
@@ -140,7 +140,7 @@ use super::*;
     )
   }
 
-  pub fn execute_vote(deps: DepsMut, _env: Env, _info: MessageInfo, poll_id: u8, choice: String) -> Result<Response, ContractError> {
+  pub fn execute_vote(deps: DepsMut, _env: Env, _info: MessageInfo, poll_id: u8, choice: u8) -> Result<Response, ContractError> {
     // first we need to check if the inputs are valid
     // 1. is there a poll with this id?
     // 2. is the poll active and eligible to be voted on?
@@ -156,11 +156,11 @@ use super::*;
       return Err(ContractError::CustomError { val: ("The poll has ended").to_string() })
     }
 
-    if choice == poll.one_address {
+    if choice == poll.one_option {
       poll.one_votes += 1;
-    } else if choice == poll.two_address {
+    } else if choice == poll.two_option {
       poll.two_votes += 1;
-    } else if choice == poll.three_address {
+    } else if choice == poll.three_option {
       poll.three_votes += 1;
     } else {
       return Err(ContractError::CustomError { val: ("No such voting option").to_string() })
@@ -171,7 +171,7 @@ use super::*;
     Ok(Response::new()
       .add_attribute("action", "vote")
       .add_attribute("poll_id", poll_id.clone().to_string())
-      .add_attribute("choice", choice.clone())
+      .add_attribute("choice", choice.clone().to_string())
     )
   }
 

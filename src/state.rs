@@ -21,16 +21,14 @@ pub struct ChannelState {
 #[cw_serde]
 pub struct PacketData {
   pub poll_id: u8,
-  pub voted_address: String,
+  pub voted: u8,
 }
-
-
 
 #[cw_serde]
 pub struct Poll {
-  pub one_address: String,
-  pub two_address: String,
-  pub three_address: String,
+  pub one_option: u8,
+  pub two_option: u8,
+  pub three_option: u8,
   pub one_votes: u64,
   pub two_votes: u64,
   pub three_votes: u64,
