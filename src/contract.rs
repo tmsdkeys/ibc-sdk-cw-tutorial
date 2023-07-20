@@ -90,7 +90,7 @@ use super::*;
     };
 
     Ok(Response::new()
-      .add_attribute("action", "send_message")
+      .add_attribute("action", "send_poll_result")
       .add_attribute("channel_id", channel.clone())
       // outbound IBC message, where packet is then received on other chain
       .add_message(IbcMsg::SendPacket {
