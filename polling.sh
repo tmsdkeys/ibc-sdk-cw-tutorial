@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Check if you got the message from ETH that collateral has been supplied:
 export QUERY_GET_CHANNEL_STATE='{"get_channel_state":{"channel":"channel-0"}}'
 ibctl exec wasm wasmd q wasm contract-state smart wasm14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s0phg4d $QUERY_GET_CHANNEL_STATE
